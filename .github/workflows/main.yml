@@ -1,0 +1,32 @@
+name: Trivy Scan Workflow
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  trivy-scan:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the code
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # Step 2: Install Trivy
+      - name: Install Trivy
+        run: |
+          curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin
+
+      # Step 3: Run Trivy to scan the repository
+      - name: Scan Repository
+        run: trivy fs .
+
+      # Step 4: Run Trivy to scan a Docker image
+      - name: Scan Docker Image
+        run: |
+          docker pull ubuntu:20.04
+          trivy image ubuntu:20.04
+
+
